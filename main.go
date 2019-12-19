@@ -11,7 +11,7 @@ type tyHandler struct{}
 func (h tyHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	log.Printf("at=request path=%s", r.URL.Path)
 	w.WriteHeader(http.StatusOK)
-	fmt.Fprintf(w, "Hello!")
+	fmt.Fprintf(w, "Hello, This is my first app!")
 }
 
 func main() {
