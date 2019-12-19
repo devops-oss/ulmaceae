@@ -1,20 +1,32 @@
 package main
 
 import (
-	"fmt"
-	"log"
 	"net/http"
+	"text/template"
 )
 
-type tyHandler struct{}
+type Todo struct {
+	Title string
+	Done  bool
+}
 
-func (h tyHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	log.Printf("at=request path=%s", r.URL.Path)
-	w.WriteHeader(http.StatusOK)
-	fmt.Fprintf(w, "Hello, This is my first app!")
+type TodoPageData struct {
+	PageTitle string
+	Todos     []Todo
 }
 
 func main() {
-	err := http.ListenAndServe(":8080", tyHandler{})
-	log.Fatal(err)
+	tmpl := template.Must(template.ParseFiles("layout.html"))
+	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		data := TodoPageData{
+			PageTitle: "My ToDo list",
+			Todos: []Todo{
+				{Title: "Task 1", Done: false},
+				{Title: "Task 2", Done: true},
+				{Title: "Task 3", Done: true},
+			},
+		}
+		tmpl.Execute(w, data)
+	})
+	http.ListenAndServe(":8080", nil)
 }
